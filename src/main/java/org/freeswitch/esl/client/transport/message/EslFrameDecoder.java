@@ -145,6 +145,15 @@ public class EslFrameDecoder extends ReplayingDecoder<EslFrameDecoder.State> {
 					currentMessage.addBodyLine(bodyLine);
 				}
 
+                try {
+                    if (bodyBytes.refCnt() == 1) {
+                        bodyBytes.release();
+                        bodyBytes = null;
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
 				// end of message
 				checkpoint(State.READ_HEADER);
 				// send message upstream
